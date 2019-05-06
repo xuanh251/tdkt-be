@@ -121,5 +121,11 @@ func NewRouter() *mux.Router {
 
 	//BauChon Route
 	r.HandleFunc("/api/bauchon/getlistobjttbydanhhieu", middlewares.IsAuth(controllers.GetListBauChonThiDuaTapTheByDanhHieu)).Methods("POST")
+	r.HandleFunc("/api/bauchon/getlistobjcnbydanhhieu", middlewares.IsAuth(controllers.GetListBauChonThiDuaCaNhanByDanhHieu)).Methods("POST")
+
+	r.HandleFunc("/api/bauchon/thiduatapthe", middlewares.IsAuth(controllers.BauChonThiDuaTapThe)).Methods("POST")
+
+	r.HandleFunc("/api/bauchon/listbcbytvhd/{id}", middlewares.IsAuth(controllers.GetListDaBauChonTDTTByTVHD)).Methods("GET")
+	r.HandleFunc("/api/bauchon/addlisttdttdatyeucau", middlewares.IsAuth(controllers.AddListTDTTDatYeuCau)).Methods("POST")
 	return r
 }

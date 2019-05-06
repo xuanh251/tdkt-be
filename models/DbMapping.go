@@ -1,19 +1,9 @@
 package models
 
-import "database/sql"
-
-//type Account struct {
-//	ID        uint32         `gorm:"primary_key" json:"uid,string,omitempty"`
-//	UserName  string         `json:"user_name"`
-//
-//	LastName  string         `json:"last_name"`
-//	FirstName string         `json:"first_name"`
-//
-//	Status    int8           `json:"status"`
-//	CreatedAt int64          `json:"created_at"`
-//	UpdatedAt int64          `json:"updated_at"`
-//
-//}
+import (
+	"database/sql"
+	"github.com/lib/pq"
+)
 
 type NamHoc struct {
 	MaNamHoc uint32 `gorm:"primary_key" json:"ma_nam_hoc"`
@@ -79,6 +69,9 @@ type DanhHieuThiDua struct {
 	TenDanhHieu    string `json:"ten_danh_hieu"`
 	DoiTuongApDung string `json:"doi_tuong_ap_dung"`
 	TrangThai      bool   `json:"trang_thai"`
+	DaBauChon      int32  `json:"da_bau_chon"`
+	ThoiGianMo     int64  `json:"thoi_gian_mo"`
+	TiLeDat        int8   `json:"ti_le_dat"`
 }
 
 func (DanhHieuThiDua) TableName() string {
@@ -89,6 +82,9 @@ type HinhThucKhenThuong struct {
 	MaHinhThuc  uint32 `gorm:"primary_key" json:"ma_hinh_thuc"`
 	TenHinhThuc string `json:"ten_hinh_thuc"`
 	TrangThai   bool   `json:"trang_thai"`
+	DaBauChon   int32  `json:"da_bau_chon"`
+	ThoiGianMo  int64  `json:"thoi_gian_mo"`
+	TiLeDat     int8   `json:"ti_le_dat"`
 }
 
 func (HinhThucKhenThuong) TableName() string {
@@ -160,14 +156,14 @@ func (ChucDanh) TableName() string {
 }
 
 type XetThiDuaTapThe struct {
-	ID             int8           `gorm:"primary_key" json:"id"`
-	MaDonVi        uint32         `json:"ma_don_vi"`
-	DonVi          DonVi          `json:"don_vi"`
-	MaDanhHieu     uint32         `json:"ma_danh_hieu"`
-	DanhHieuThiDua DanhHieuThiDua `json:"danh_hieu"`
-	MaHoiDong      string         `json:"ma_hoi_dong"`
-	HoiDong        HoiDong        `json:"hoi_dong"`
-	TiLeDat        int8           `json:"ti_le_dat"`
+	ID                  int8           `gorm:"primary_key" json:"id"`
+	MaDonVi             uint32         `json:"ma_don_vi"`
+	DonVi               DonVi          `json:"don_vi"`
+	MaDanhHieu          uint32         `json:"ma_danh_hieu"`
+	DanhHieuThiDua      DanhHieuThiDua `json:"danh_hieu"`
+	MaHoiDong           string         `json:"ma_hoi_dong"`
+	HoiDong             HoiDong        `json:"hoi_dong"`
+	BauChonThiDuaTapThe []BauChonThiDuaTapThe
 }
 
 func (XetThiDuaTapThe) TableName() string {
@@ -175,14 +171,14 @@ func (XetThiDuaTapThe) TableName() string {
 }
 
 type XetThiDuaCaNhan struct {
-	ID             int8           `gorm:"primary_key" json:"id"`
-	MaCanBo        uint32         `json:"ma_can_bo"`
-	CanBo          CanBo          `json:"can_bo"`
-	MaDanhHieu     uint32         `json:"ma_danh_hieu"`
-	DanhHieuThiDua DanhHieuThiDua `json:"danh_hieu"`
-	MaHoiDong      string         `json:"ma_hoi_dong"`
-	HoiDong        HoiDong        `json:"hoi_dong"`
-	TiLeDat        int8           `json:"ti_le_dat"`
+	ID                  int8           `gorm:"primary_key" json:"id"`
+	MaCanBo             uint32         `json:"ma_can_bo"`
+	CanBo               CanBo          `json:"can_bo"`
+	MaDanhHieu          uint32         `json:"ma_danh_hieu"`
+	DanhHieuThiDua      DanhHieuThiDua `json:"danh_hieu"`
+	MaHoiDong           string         `json:"ma_hoi_dong"`
+	HoiDong             HoiDong        `json:"hoi_dong"`
+	BauChonThiDuaCaNhan []BauChonThiDuaCaNhan
 }
 
 func (XetThiDuaCaNhan) TableName() string {
@@ -190,15 +186,15 @@ func (XetThiDuaCaNhan) TableName() string {
 }
 
 type XetKhenThuongTapThe struct {
-	ID                 int8               `gorm:"primary_key" json:"id"`
-	MaDonVi            uint32             `json:"ma_don_vi"`
-	DonVi              DonVi              `json:"don_vi"`
-	MaHinhThuc         uint32             `json:"ma_hinh_thuc"`
-	HinhThucKhenThuong HinhThucKhenThuong `json:"hinh_thuc"`
-	MaHoiDong          string             `json:"ma_hoi_dong"`
-	HoiDong            HoiDong            `json:"hoi_dong"`
-	TiLeDat            int8               `json:"ti_le_dat"`
-	NoiDung            string             `json:"noi_dung"`
+	ID                      int8               `gorm:"primary_key" json:"id"`
+	MaDonVi                 uint32             `json:"ma_don_vi"`
+	DonVi                   DonVi              `json:"don_vi"`
+	MaHinhThuc              uint32             `json:"ma_hinh_thuc"`
+	HinhThucKhenThuong      HinhThucKhenThuong `json:"hinh_thuc"`
+	MaHoiDong               string             `json:"ma_hoi_dong"`
+	HoiDong                 HoiDong            `json:"hoi_dong"`
+	NoiDung                 string             `json:"noi_dung"`
+	BauChonKhenThuongTapThe []BauChonKhenThuongTapThe
 }
 
 func (XetKhenThuongTapThe) TableName() string {
@@ -206,15 +202,15 @@ func (XetKhenThuongTapThe) TableName() string {
 }
 
 type XetKhenThuongCaNhan struct {
-	ID                 int8               `gorm:"primary_key" json:"id"`
-	MaCanBo            uint32             `json:"ma_can_bo"`
-	CanBo              CanBo              `json:"can_bo"`
-	MaHinhThuc         uint32             `json:"ma_hinh_thuc"`
-	HinhThucKhenThuong HinhThucKhenThuong `json:"hinh_thuc"`
-	MaHoiDong          string             `json:"ma_hoi_dong"`
-	HoiDong            HoiDong            `json:"hoi_dong"`
-	TiLeDat            int8               `json:"ti_le_dat"`
-	NoiDung            string             `json:"noi_dung"`
+	ID                      int8               `gorm:"primary_key" json:"id"`
+	MaCanBo                 uint32             `json:"ma_can_bo"`
+	CanBo                   CanBo              `json:"can_bo"`
+	MaHinhThuc              uint32             `json:"ma_hinh_thuc"`
+	HinhThucKhenThuong      HinhThucKhenThuong `json:"hinh_thuc"`
+	MaHoiDong               string             `json:"ma_hoi_dong"`
+	HoiDong                 HoiDong            `json:"hoi_dong"`
+	NoiDung                 string             `json:"noi_dung"`
+	BauChonKhenThuongCaNhan []BauChonKhenThuongCaNhan
 }
 
 func (XetKhenThuongCaNhan) TableName() string {
@@ -267,4 +263,34 @@ type BauChonKhenThuongCaNhan struct {
 
 func (BauChonKhenThuongCaNhan) TableName() string {
 	return "bau_chon_khen_thuong_ca_nhan"
+}
+
+type TapTheQuaTrinh struct {
+	MaNamHoc       int8 `json:"ma_nam_hoc"`
+	NamHoc         NamHoc
+	MaDonVi        int8 `json:"ma_don_vi"`
+	DonVi          DonVi
+	MaHoiDong      string `json:"ma_hoi_dong"`
+	HoiDong        HoiDong
+	ListDanhHieu   pq.Int64Array `gorm:"type:int8[]" json:"list_danh_hieu"`
+	ListKhenThuong pq.Int64Array `gorm:"type:int8[]" json:"list_khen_thuong"`
+}
+
+func (TapTheQuaTrinh) TableName() string {
+	return "tapthe_quatrinh"
+}
+
+type CaNhanQuaTrinh struct {
+	MaNamHoc       int8 `json:"ma_nam_hoc"`
+	NamHoc         NamHoc
+	MaCanBo        int8 `json:"ma_can_bo"`
+	CanBo          CanBo
+	MaHoiDong      string `json:"ma_hoi_dong"`
+	HoiDong        HoiDong
+	ListDanhHieu   pq.Int64Array `gorm:"type:int8[]" json:"list_danh_hieu"`
+	ListKhenThuong pq.Int64Array `gorm:"type:int8[]" json:"list_khen_thuong"`
+}
+
+func (CaNhanQuaTrinh) TableName() string {
+	return "canhan_quatrinh"
 }

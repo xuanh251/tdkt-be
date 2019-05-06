@@ -23,7 +23,7 @@ func main() {
 	r := routes.NewRouter()
 	r.HandleFunc("/ws", WsPage)
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:4200"},
+		AllowedOrigins: []string{"*"},
 		AllowedHeaders: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
 	})

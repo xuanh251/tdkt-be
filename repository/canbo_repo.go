@@ -79,6 +79,32 @@ func GetCanBoByID(id uint32) (models.CanBo, error) {
 	}
 	return canbo, nil
 }
+func GetCanBoByInfo(cb *models.CanBo) (models.CanBo, error) {
+	con := driver.Connect()
+	defer con.Close()
+	canbo := models.CanBo{}
+	err := con.First(&canbo, cb.MaCanBo).Error
+	if err != nil {
+		return models.CanBo{}, err
+	}
+	if canbo.MaCanBo == 0 {
+		return models.CanBo{}, ErrCanBoNotFound
+	}
+	canbo.NgaySinh = canbo.NgaySinh[0:10]
+	canbo.ChucVu, err = GetChucVuByID(canbo.MaChucVu)
+	if err != nil {
+		return models.CanBo{}, err
+	}
+	canbo.DonVi, err = GetDonViByID(canbo.MaDonVi)
+	if err != nil {
+		return models.CanBo{}, err
+	}
+	canbo.Quyen, err = GetQuyenByID(canbo.MaQuyen)
+	if err != nil {
+		return models.CanBo{}, err
+	}
+	return canbo, nil
+}
 func GetCanBoByEmail(email string) (models.CanBo, error) {
 	con := driver.Connect()
 	defer con.Close()

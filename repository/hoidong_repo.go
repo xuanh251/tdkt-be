@@ -304,78 +304,75 @@ func DongHoiDong(maHoiDong string) error {
 			}
 		}
 	}
+	listdh, err := GetAllDanhHieu()
+	for _, value := range listdh {
+		value.TrangThai = false
+		value.DaBauChon = 0
+		value.ThoiGianMo = 0
+		err = con.Save(&value).Error
+		if err != nil {
+			return err
+		}
+	}
+	listkt, err := GetAllHinhThucKhenThuong()
+	for _, value := range listkt {
+		value.TrangThai = false
+		value.DaBauChon = 0
+		value.ThoiGianMo = 0
+		err = con.Save(&value).Error
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-func ActiveDanhHieu(maDanhHieu int) error {
+func ActiveDanhHieu(maDanhHieu int) (models.DanhHieuThiDua, error) {
 	con := driver.Connect()
 	defer con.Close()
 	dh := models.DanhHieuThiDua{}
 	err := con.Find(&dh, maDanhHieu).Error
 	if err != nil {
-		return err
+		return models.DanhHieuThiDua{}, err
 	}
 	dh.TrangThai = true
+	dh.DaBauChon = 1
+	timenow := int64(time.Now().Unix() * 1000)
+	dh.ThoiGianMo = timenow
 	err = con.Save(&dh).Error
 	if err != nil {
-		return err
+		return models.DanhHieuThiDua{}, err
 	}
-	return nil
+	return dh, nil
 }
-func DeactiveDanhHieu(maDanhHieu int) error {
+func DeactiveDanhHieu(maDanhHieu int) (models.DanhHieuThiDua, error) {
 	con := driver.Connect()
 	defer con.Close()
 	dh := models.DanhHieuThiDua{}
 	err := con.Find(&dh, maDanhHieu).Error
 	if err != nil {
-		return err
+		return models.DanhHieuThiDua{}, err
 	}
 	dh.TrangThai = false
+	dh.DaBauChon = 2
+	dh.ThoiGianMo = 0
 	err = con.Save(&dh).Error
 	if err != nil {
-		return err
+		return models.DanhHieuThiDua{}, err
 	}
-	return nil
+	return models.DanhHieuThiDua{}, nil
 }
-func CheckDanhHieuDaBauChon(maHoiDong string, maDanhHieu int) (bool, error) {
-	//bằng true là đã bầu chọn, false là chưa
-	con := driver.Connect()
-	defer con.Close()
-	listttxtd := []models.XetThiDuaTapThe{}
-	listcnxtd := []models.XetThiDuaCaNhan{}
-	rs := false
-	err := con.Where("ma_hoi_dong=? AND ma_danh_hieu=?", maHoiDong, maDanhHieu).Find(&listttxtd).Error
-	if err != nil {
-		return false, err
-	}
-	for _, elem := range listttxtd {
-		bc := []models.BauChonThiDuaTapThe{}
-		err = con.Where("ma_xet=?", elem.ID).Find(&bc).Error
-		if err != nil {
-			return false, err
-		}
-		if len(bc) != 0 {
-			rs = true
-			break
-		}
-	}
-	if !rs {
-		err = con.Where("ma_hoi_dong=? AND ma_danh_hieu=?", maHoiDong, maDanhHieu).Find(&listcnxtd).Error
-		if err != nil {
-			return false, err
-		}
-		for _, elem := range listcnxtd {
-			bc := []models.BauChonThiDuaCaNhan{}
-			err = con.Where("ma_xet=?", elem.ID).Find(&bc).Error
-			if err != nil {
-				return false, err
-			}
-			if len(bc) != 0 {
-				rs = true
-				break
-			}
-		}
-	}
 
-	return rs, nil
-}
+//func CheckDanhHieuDaBauChon(maDanhHieu int) (bool, error) {
+//	con := driver.Connect()
+//	defer con.Close()
+//	dh := models.DanhHieuThiDua{}
+//	err := con.Find(&dh, maDanhHieu).Error
+//	if err != nil {
+//		return false, err
+//	}
+//	if dh.DaBauChon == 2 {
+//		return true, nil
+//	}
+//	return false, nil
+//}

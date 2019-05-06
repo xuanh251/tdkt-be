@@ -203,12 +203,12 @@ func ActiveDanhHieu(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorResponse(w, err, http.StatusBadRequest)
 		return
 	}
-	err = repository.ActiveDanhHieu(id)
+	dh, err := repository.ActiveDanhHieu(id)
 	if err != nil {
 		utils.ErrorResponse(w, err, http.StatusBadRequest)
 		return
 	}
-	utils.ToJson(w, true)
+	utils.ToJson(w, dh)
 }
 func DeactiveDanhHieu(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -217,10 +217,26 @@ func DeactiveDanhHieu(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorResponse(w, err, http.StatusBadRequest)
 		return
 	}
-	err = repository.DeactiveDanhHieu(id)
+	dh, err := repository.DeactiveDanhHieu(id)
 	if err != nil {
 		utils.ErrorResponse(w, err, http.StatusBadRequest)
 		return
 	}
-	utils.ToJson(w, true)
+	utils.ToJson(w, dh)
 }
+
+//func CheckDanhHieuDaBauChon(w http.ResponseWriter, r *http.Request) {
+//	params := mux.Vars(r)
+//	id, err := strconv.Atoi(params["id"])
+//	if err != nil {
+//		utils.ErrorResponse(w, err, http.StatusBadRequest)
+//		return
+//	}
+//	rs := false
+//	rs, err = repository.CheckDanhHieuDaBauChon(id)
+//	if err != nil {
+//		utils.ErrorResponse(w, err, http.StatusBadRequest)
+//		return
+//	}
+//	utils.ToJson(w, rs)
+//}
