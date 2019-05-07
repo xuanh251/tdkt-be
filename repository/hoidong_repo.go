@@ -309,6 +309,8 @@ func DongHoiDong(maHoiDong string) error {
 		value.TrangThai = false
 		value.DaBauChon = 0
 		value.ThoiGianMo = 0
+		value.SoPhut = 0
+		value.SlBoPhieu = 0
 		err = con.Save(&value).Error
 		if err != nil {
 			return err
@@ -319,6 +321,7 @@ func DongHoiDong(maHoiDong string) error {
 		value.TrangThai = false
 		value.DaBauChon = 0
 		value.ThoiGianMo = 0
+		value.SoPhut = 0
 		err = con.Save(&value).Error
 		if err != nil {
 			return err
@@ -343,6 +346,18 @@ func ActiveDanhHieu(maDanhHieu int) (models.DanhHieuThiDua, error) {
 	if err != nil {
 		return models.DanhHieuThiDua{}, err
 	}
+	listtp := []models.ThanhPhanHoiDong{}
+	err = con.Where("bau_chon = true").Find(&listtp).Error
+	if err != nil {
+		return models.DanhHieuThiDua{}, err
+	}
+	for _, elem := range listtp {
+		elem.BauChon = false
+		err = con.Save(&elem).Error
+		if err != nil {
+			return models.DanhHieuThiDua{}, err
+		}
+	}
 	return dh, nil
 }
 func DeactiveDanhHieu(maDanhHieu int) (models.DanhHieuThiDua, error) {
@@ -355,7 +370,12 @@ func DeactiveDanhHieu(maDanhHieu int) (models.DanhHieuThiDua, error) {
 	}
 	dh.TrangThai = false
 	dh.DaBauChon = 2
-	dh.ThoiGianMo = 0
+	listtp := []models.ThanhPhanHoiDong{}
+	err = con.Where("bau_chon = true").Find(&listtp).Error
+	if err != nil {
+		return models.DanhHieuThiDua{}, err
+	}
+	dh.SlBoPhieu = len(listtp)
 	err = con.Save(&dh).Error
 	if err != nil {
 		return models.DanhHieuThiDua{}, err
@@ -363,16 +383,33 @@ func DeactiveDanhHieu(maDanhHieu int) (models.DanhHieuThiDua, error) {
 	return models.DanhHieuThiDua{}, nil
 }
 
-//func CheckDanhHieuDaBauChon(maDanhHieu int) (bool, error) {
-//	con := driver.Connect()
-//	defer con.Close()
-//	dh := models.DanhHieuThiDua{}
-//	err := con.Find(&dh, maDanhHieu).Error
-//	if err != nil {
-//		return false, err
-//	}
-//	if dh.DaBauChon == 2 {
-//		return true, nil
-//	}
-//	return false, nil
-//}
+func CapNhatDiemDanh(maThanhPhan int, coMat bool) error {
+	con := driver.Connect()
+	defer con.Close()
+	tp := models.ThanhPhanHoiDong{}
+	err := con.Find(&tp, maThanhPhan).Error
+	if err != nil {
+		return err
+	}
+	tp.CoMat = coMat
+	err = con.Save(&tp).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func CapNhatThoiGianBauChon(maDanhHieu int, soPhut int) error {
+	con := driver.Connect()
+	defer con.Close()
+	dh := models.DanhHieuThiDua{}
+	err := con.Find(&dh, maDanhHieu).Error
+	if err != nil {
+		return err
+	}
+	dh.SoPhut = soPhut
+	err = con.Save(&dh).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

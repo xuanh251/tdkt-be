@@ -72,6 +72,8 @@ type DanhHieuThiDua struct {
 	DaBauChon      int32  `json:"da_bau_chon"`
 	ThoiGianMo     int64  `json:"thoi_gian_mo"`
 	TiLeDat        int8   `json:"ti_le_dat"`
+	SoPhut         int    `json:"so_phut"`
+	SlBoPhieu      int    `json:"sl_bo_phieu"`
 }
 
 func (DanhHieuThiDua) TableName() string {
@@ -85,6 +87,8 @@ type HinhThucKhenThuong struct {
 	DaBauChon   int32  `json:"da_bau_chon"`
 	ThoiGianMo  int64  `json:"thoi_gian_mo"`
 	TiLeDat     int8   `json:"ti_le_dat"`
+	SoPhut      int    `json:"so_phut"`
+	SlBoPhieu   int    `json:"sl_bo_phieu"`
 }
 
 func (HinhThucKhenThuong) TableName() string {
@@ -139,6 +143,8 @@ type ThanhPhanHoiDong struct {
 	CanBo       CanBo
 	MaChucDanh  uint32 `json:"ma_chuc_danh"`
 	ChucDanh    ChucDanh
+	CoMat       bool `json:"co_mat"`
+	BauChon     bool `json:"bau_chon"`
 }
 
 func (ThanhPhanHoiDong) TableName() string {
@@ -266,14 +272,16 @@ func (BauChonKhenThuongCaNhan) TableName() string {
 }
 
 type TapTheQuaTrinh struct {
-	MaNamHoc       int8 `json:"ma_nam_hoc"`
-	NamHoc         NamHoc
-	MaDonVi        int8 `json:"ma_don_vi"`
-	DonVi          DonVi
-	MaHoiDong      string `json:"ma_hoi_dong"`
-	HoiDong        HoiDong
-	ListDanhHieu   pq.Int64Array `gorm:"type:int8[]" json:"list_danh_hieu"`
-	ListKhenThuong pq.Int64Array `gorm:"type:int8[]" json:"list_khen_thuong"`
+	MaNamHoc           int8 `json:"ma_nam_hoc"`
+	NamHoc             NamHoc
+	MaDonVi            int8 `json:"ma_don_vi"`
+	DonVi              DonVi
+	MaHoiDong          string `json:"ma_hoi_dong"`
+	HoiDong            HoiDong
+	ListDanhHieu       pq.Int64Array `gorm:"type:int8[]" json:"list_danh_hieu"`
+	DanhHieuThiDua     []DanhHieuThiDua
+	ListKhenThuong     pq.Int64Array `gorm:"type:int8[]" json:"list_khen_thuong"`
+	HinhThucKhenThuong []HinhThucKhenThuong
 }
 
 func (TapTheQuaTrinh) TableName() string {
@@ -281,14 +289,16 @@ func (TapTheQuaTrinh) TableName() string {
 }
 
 type CaNhanQuaTrinh struct {
-	MaNamHoc       int8 `json:"ma_nam_hoc"`
-	NamHoc         NamHoc
-	MaCanBo        int8 `json:"ma_can_bo"`
-	CanBo          CanBo
-	MaHoiDong      string `json:"ma_hoi_dong"`
-	HoiDong        HoiDong
-	ListDanhHieu   pq.Int64Array `gorm:"type:int8[]" json:"list_danh_hieu"`
-	ListKhenThuong pq.Int64Array `gorm:"type:int8[]" json:"list_khen_thuong"`
+	MaNamHoc           int8 `json:"ma_nam_hoc"`
+	NamHoc             NamHoc
+	MaCanBo            int8 `json:"ma_can_bo"`
+	CanBo              CanBo
+	MaHoiDong          string `json:"ma_hoi_dong"`
+	HoiDong            HoiDong
+	ListDanhHieu       pq.Int64Array `gorm:"type:int8[]" json:"list_danh_hieu"`
+	DanhHieuThiDua     []DanhHieuThiDua
+	ListKhenThuong     pq.Int64Array `gorm:"type:int8[]" json:"list_khen_thuong"`
+	HinhThucKhenThuong []HinhThucKhenThuong
 }
 
 func (CaNhanQuaTrinh) TableName() string {

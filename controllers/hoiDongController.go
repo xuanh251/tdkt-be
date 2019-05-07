@@ -225,18 +225,41 @@ func DeactiveDanhHieu(w http.ResponseWriter, r *http.Request) {
 	utils.ToJson(w, dh)
 }
 
-//func CheckDanhHieuDaBauChon(w http.ResponseWriter, r *http.Request) {
-//	params := mux.Vars(r)
-//	id, err := strconv.Atoi(params["id"])
-//	if err != nil {
-//		utils.ErrorResponse(w, err, http.StatusBadRequest)
-//		return
-//	}
-//	rs := false
-//	rs, err = repository.CheckDanhHieuDaBauChon(id)
-//	if err != nil {
-//		utils.ErrorResponse(w, err, http.StatusBadRequest)
-//		return
-//	}
-//	utils.ToJson(w, rs)
-//}
+func CapNhatDiemDanh(w http.ResponseWriter, r *http.Request) {
+	body, _ := ioutil.ReadAll(r.Body)
+	m := make(map[string]interface{})
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+	list := m["request"].([]interface{})
+	for _, elem := range list {
+		maThanhPhan := elem.(map[string]interface{})["ma_thanh_phan"]
+		coMat := elem.(map[string]interface{})["co_mat"]
+		err = repository.CapNhatDiemDanh(int(maThanhPhan.(float64)), coMat.(bool))
+		if err != nil {
+			utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
+			return
+		}
+	}
+	utils.ToJson(w, "Đã cập nhật trạng thái các thành viên hội đồng!")
+}
+
+func CapNhatThoiGianBauChon(w http.ResponseWriter, r *http.Request) {
+	body, _ := ioutil.ReadAll(r.Body)
+	m := make(map[string]interface{})
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+	maDanhHieu := m["ma_danh_hieu"].(float64)
+	soPhut := m["so_phut"].(float64)
+	err = repository.CapNhatThoiGianBauChon(int(maDanhHieu), int(soPhut))
+	if err != nil {
+		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+	utils.ToJson(w, true)
+}

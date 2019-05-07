@@ -56,17 +56,24 @@ func BauChonThiDuaTapThe(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
 		return
 	}
+	tp := 0
 	data := m["Request"].([]interface{})
 	for _, elem := range data {
 		obj := models.BauChonThiDuaTapThe{}
 		jsonString, _ := json.Marshal(elem.(map[string]interface{}))
 		json.Unmarshal(jsonString, &obj)
+		tp = int(obj.MaThanhPhan)
 		err = repository.AddBauChonThiDuaTapThe(obj)
 		if err != nil {
 			utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
 			return
 		}
 	}
+	if err != nil {
+		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+	err = repository.SetDaBauChon(tp)
 	if err != nil {
 		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
 		return

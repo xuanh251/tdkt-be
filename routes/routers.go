@@ -89,6 +89,8 @@ func NewRouter() *mux.Router {
 
 	r.HandleFunc("/api/hoidong/open/{id}", middlewares.IsAuth(controllers.MoHoiDong)).Methods("GET")
 	r.HandleFunc("/api/hoidong/close/{id}", middlewares.IsAuth(controllers.DongHoiDong)).Methods("GET")
+	r.HandleFunc("/api/hoidong/capnhatdiemdanh", middlewares.IsAuth(controllers.CapNhatDiemDanh)).Methods("POST")
+	r.HandleFunc("/api/hoidong/capnhatthoigianbauchon", middlewares.IsAuth(controllers.CapNhatThoiGianBauChon)).Methods("POST")
 
 	//ChucDanh route
 	r.HandleFunc("/api/chucdanh/create", middlewares.IsAuth(controllers.CreateChucDanh)).Methods("POST")
@@ -127,5 +129,12 @@ func NewRouter() *mux.Router {
 
 	r.HandleFunc("/api/bauchon/listbcbytvhd/{id}", middlewares.IsAuth(controllers.GetListDaBauChonTDTTByTVHD)).Methods("GET")
 	r.HandleFunc("/api/bauchon/addlisttdttdatyeucau", middlewares.IsAuth(controllers.AddListTDTTDatYeuCau)).Methods("POST")
+
+	//tapthe
+	r.HandleFunc("/api/tapthetd/napdanhsach", middlewares.IsAuth(controllers.NapDanhSachTapTheThiDua)).Methods("GET")
+	r.HandleFunc("/api/canhantd/napdanhsach", middlewares.IsAuth(controllers.NapDanhSachCaNhanThiDua)).Methods("GET")
+
+	r.HandleFunc("/api/tapthekt/napdanhsach", middlewares.IsAuth(controllers.NapDanhSachTapTheKT)).Methods("GET")
+	r.HandleFunc("/api/canhankt/napdanhsach", middlewares.IsAuth(controllers.NapDanhSachCaNhanKT)).Methods("GET")
 	return r
 }

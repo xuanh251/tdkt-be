@@ -19,6 +19,10 @@ func GetListBauChonThiDuaTapTheByDanhHieu(maDanhHieu int8, maHoiDong string) ([]
 		if err != nil {
 			return nil, err
 		}
+		err = con.Find(&elem.DanhHieuThiDua, elem.MaDanhHieu).Error
+		if err != nil {
+			return nil, err
+		}
 		err = con.Where("ma_xet=?", elem.ID).Find(&elem.BauChonThiDuaTapThe).Error
 		if err != nil {
 			return nil, err
@@ -73,6 +77,21 @@ func AddBauChonThiDuaTapThe(obj models.BauChonThiDuaTapThe) error {
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+func SetDaBauChon(maThanhPhan int) error {
+	con := driver.Connect()
+	defer con.Close()
+	tp := models.ThanhPhanHoiDong{}
+	err := con.Find(&tp, maThanhPhan).Error
+	if err != nil {
+		return err
+	}
+	tp.BauChon = true
+	err = con.Save(&tp).Error
+	if err != nil {
+		return err
 	}
 	return nil
 }
