@@ -63,14 +63,19 @@ func CreateHoiDongCanCuRelate(obj models.HoiDongCanCu) (bool, error) {
 func CreateThanhPhanHoiDong(obj models.ThanhPhanHoiDong) (bool, error) {
 	con := driver.Connect()
 	defer con.Close()
-	addRc := con.NewRecord(obj)
-	if addRc {
-		err := con.Create(&obj).Error
-		if err != nil {
-			return false, err
+	tpexist := models.ThanhPhanHoiDong{}
+	err := con.Where("ma_chuc_danh=? AND ma_hoi_dong=?", obj.MaChucDanh, obj.MaHoiDong).Find(&tpexist).Error
+	if err != nil {
+		addRc := con.NewRecord(obj)
+		if addRc {
+			err := con.Create(&obj).Error
+			if err != nil {
+				return false, err
+			}
 		}
+		return true, nil
 	}
-	return true, nil
+	return false, err
 }
 func GetListThanhVienByHoiDong(maHoiDong string) ([]models.ThanhPhanHoiDong, error) {
 	listThanhPhanHoiDong := []models.ThanhPhanHoiDong{}

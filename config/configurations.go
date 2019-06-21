@@ -18,6 +18,6 @@ type Config struct {
 }
 
 func LoadConfigs() Config {
-	return Config{Database{"localhost", 5432, "postgres", "dqu_tdkt", "admin", "disable"},
+	return Config{Database{"localhost", 5432, "postgres", "dqu_tdkt", "123456", "disable"},
 		Jwt{[]byte("tdkt-dhqn")}}
 }

@@ -96,13 +96,12 @@ func CapNhatThanhVienHoiDong(w http.ResponseWriter, r *http.Request) {
 	obj := models.ThanhPhanHoiDong{}
 	jsonString, _ := json.Marshal(m)
 	json.Unmarshal(jsonString, &obj)
-	_, err = repository.CreateThanhPhanHoiDong(obj)
+	ok, err := repository.CreateThanhPhanHoiDong(obj)
 	if err != nil {
 		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	utils.ToJson(w, "Đã cập nhật thành viên hội đồng!")
+	utils.ToJson(w, ok)
 }
 func GetListThanhVienByHoiDong(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
